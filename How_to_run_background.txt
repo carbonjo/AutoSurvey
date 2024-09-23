@@ -1,0 +1,71 @@
+Certainly! Here’s a summarized list of the steps we took to set up your Flask application as a systemd service, ensuring it runs in the background and remains operational even when the shell is closed:
+
+## Steps to Set Up a Flask Application as a systemd Service
+
+### 1. Prepare Your Flask Application
+- Ensure your Flask application (e.g., `app.py`) is functioning correctly in your virtual environment.
+
+### 2. Create a systemd Service File
+- Create a new service file for your application:
+  ```bash
+  sudo nano /etc/systemd/system/survey_app.service
+  ```
+  
+- Add the following content to the service file:
+  ```ini
+  [Unit]
+  Description=Flask Application
+  After=network.target
+
+  [Service]
+  User=carbonjo
+  WorkingDirectory=/home/carbonjo/Auto_survey2
+  Environment="PATH=/home/carbonjo/survey/bin"
+  ExecStart=/home/carbonjo/survey/bin/python /home/carbonjo/Auto_survey2/app.py
+  Restart=always
+
+  [Install]
+  WantedBy=multi-user.target
+  ```
+
+### 3. Check and Adjust Permissions
+- Ensure the service file has the correct permissions:
+  ```bash
+  sudo chmod 644 /etc/systemd/system/survey_app.service
+  ```
+
+### 4. Reload systemd Daemon
+- After creating or modifying the service file, reload the systemd daemon to recognize the new service:
+  ```bash
+  sudo systemctl daemon-reload
+  ```
+
+### 5. Start the Service
+- Start your Flask application service:
+  ```bash
+  sudo systemctl start survey_app
+  ```
+
+### 6. Enable the Service at Boot
+- Enable the service to start automatically on system boot:
+  ```bash
+  sudo systemctl enable survey_app
+  ```
+
+### 7. Check Service Status
+- Check the status of your service to ensure it is running correctly:
+  ```bash
+  sudo systemctl status survey_app
+  ```
+
+### 8. View Logs for Troubleshooting (if needed)
+- If there are issues, view logs for more details:
+  ```bash
+  sudo journalctl -u survey_app -n 50 --no-pager
+  ```
+
+### Additional Notes:
+- **Environment Variables**: Ensure any sensitive information (like API keys) is stored in a `.env` file and not hardcoded in your application.
+- **Testing**: Always test your application manually before setting it up as a service to ensure it runs without errors.
+
+This documentation should provide a clear overview of how you set up your Flask application as a systemd service. If you have any additional steps or modifications, feel free to add them!
