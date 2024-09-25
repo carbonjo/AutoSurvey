@@ -29,9 +29,9 @@ def get_db_connection():
 def chat_with_gpt(prompt):
     try:
         response = client.chat.completions.create(
-            model="gpt-4",  # Use an available model
+            model="gpt-4",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant that generates SQL queries."},
+                {"role": "system", "content": "You are a helpful assistant that generates SQL queries or summarizes text."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=150
@@ -46,12 +46,13 @@ def collect_data():
         name = request.form['name']
         age = request.form['age']
         email = request.form['email']
+        comment = request.form['comment']
 
         # Insert data into MySQL
         db = get_db_connection()
         cursor = db.cursor()
-        query = "INSERT INTO data (name, age, email) VALUES (%s, %s, %s)"
-        values = (name, age, email)
+        query = "INSERT INTO data (name, age, email, comment) VALUES (%s, %s, %s, %s)"
+        values = (name, age, email, comment)
         cursor.execute(query, values)
         db.commit()
         cursor.close()
@@ -65,7 +66,7 @@ def ask_question():
     if request.method == 'POST':
         question = request.form['question']
         
-        prompt = f"Translate the following natural language question into a SQL query for MySQL. The query should be for the 'data' table with columns 'name', 'age', and 'email'. Only return the SQL query, nothing else:\n\n{question}"
+        prompt = f"Translate the following natural language question into a SQL query for MySQL. The query should be for the 'data' table with columns 'name', 'age', 'email', and 'comment'. Only return the SQL query, nothing else:\n\n{question}"
         sql_query = chat_with_gpt(prompt)
         
         try:
@@ -82,6 +83,21 @@ def ask_question():
             return render_template('ask_question.html', error=error_message, query=sql_query, question=question)
     return render_template('ask_question.html')
 
-# The block that runs the Flask application
+@app.route('/summarize_comments')
+def summarize_comments():
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT comment FROM data")
+    comments = cursor.fetchall()
+    cursor.close()
+    db.close()
+
+    all_comments = " ".join([comment[0] for comment in comments if comment[0]])
+    
+    prompt = f"Summarize the following string of comments from all the people in the database into a concise paragraph:\n\n{all_comments}"
+    summary = chat_with_gpt(prompt)
+
+    return render_template('summary.html', summary=summary)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)

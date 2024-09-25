@@ -1,0 +1,2 @@
+Notes.txt
+To start the Flask app in the server: sudo systemctl start survey_app
