@@ -1,2 +1,3 @@
 Notes.txt
 To start the Flask app in the server: sudo systemctl start survey_app
+In chatGPT the chat tread is called Flas/MySQL Survey
