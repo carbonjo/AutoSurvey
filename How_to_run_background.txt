@@ -1,3 +1,11 @@
+-----------Why use gunicorn--------------
+
+When deploying Flask in production, it’s recommended to use a production-ready web server like Gunicorn 
+or uWSGI rather than Flask’s built-in development server. Flask’s built-in server is not optimized for 
+handling large traffic or for production use cases.
+
+----------------------gunicorn is installed in the next section after the one below----------------------
+
 Certainly! Here’s a summarized list of the steps we took to set up your Flask application as a systemd service, ensuring it runs in the background and remains operational even when the shell is closed:
 
 ## Steps to Set Up a Flask Application as a systemd Service
@@ -69,3 +77,82 @@ Certainly! Here’s a summarized list of the steps we took to set up your Flask 
 - **Testing**: Always test your application manually before setting it up as a service to ensure it runs without errors.
 
 This documentation should provide a clear overview of how you set up your Flask application as a systemd service. If you have any additional steps or modifications, feel free to add them!
+
+
+-------------------------Improved the app by installing gunicorn------------------
+
+
+Here's a summary of the steps we followed to install and configure Gunicorn for your Flask app:
+
+1. Install Gunicorn
+First, we installed Gunicorn in your virtual environment:
+
+bash
+Copy code
+pip install gunicorn
+2. Create a Systemd Service File
+We created a systemd service file to ensure that Gunicorn runs your Flask app as a service and starts automatically on server boot.
+
+Create the service file:
+
+bash
+Copy code
+sudo nano /etc/systemd/system/survey_app.service
+Add the following content to the service file:
+
+ini
+Copy code
+[Unit]
+Description=Gunicorn instance to serve Flask app
+After=network.target
+
+[Service]
+User=carbonjo
+Group=www-data
+WorkingDirectory=/home/carbonjo/Auto_survey2
+Environment="PATH=/home/carbonjo/survey/bin"
+ExecStart=/home/carbonjo/survey/bin/gunicorn --workers 3 --bind 0.0.0.0:5001 app:app
+
+[Install]
+WantedBy=multi-user.target
+WorkingDirectory: Directory where app.py is located.
+ExecStart: Command to start Gunicorn, pointing to the correct virtual environment and the Flask app instance (app:app).
+3. Reload systemd and Enable the Service
+After creating the service file, we reloaded systemd and enabled the service so it starts automatically on reboot.
+
+Reload systemd:
+
+bash
+Copy code
+sudo systemctl daemon-reload
+Enable the service:
+
+bash
+Copy code
+sudo systemctl enable survey_app
+Start the service:
+
+bash
+Copy code
+sudo systemctl start survey_app
+Check the status to ensure it’s running:
+
+bash
+Copy code
+sudo systemctl status survey_app
+4. Verify the Service
+We tested that Gunicorn was working by accessing the Flask app at http://your-server-ip:5001. We also checked the logs for any potential issues:
+
+bash
+Copy code
+journalctl -u survey_app.service
+Conclusion
+Gunicorn is now set up to run your Flask app as a service that starts automatically on boot. We verified that it works, and it will continue running even if you close your terminal.
+
+Let me know if you need more notes or further clarification!
+
+
+-----------------------------------------------------------------------------
+
+
+

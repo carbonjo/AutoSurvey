@@ -1,3 +1,7 @@
 Notes.txt
 To start the Flask app in the server: sudo systemctl start survey_app
 In chatGPT the chat tread is called Flas/MySQL Survey
+The link to the chatGPT tread is https://chatgpt.com/share/66f82dfe-3d84-800b-b04d-7445660cdefa
+Iinstalled gunicorn (see chatGPT advise)
+pip install gunicorn
+gunicorn --bind 0.0.0.0:5001 app:app
