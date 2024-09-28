@@ -34,7 +34,7 @@ def chat_with_gpt(prompt):
                 {"role": "system", "content": "You are a helpful assistant that generates SQL queries or summarizes text."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=150
+            max_tokens=1500
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
@@ -92,9 +92,9 @@ def summarize_comments():
     cursor.close()
     db.close()
 
-    all_comments = " ".join([comment[0] for comment in comments if comment[0]])
+    all_comments = "***".join([comment[0] for comment in comments if comment[0]])
     
-    prompt = f"Summarize the following string of comments from all the people in the database into a concise paragraph:\n\n{all_comments}"
+    prompt = f"Do not show the SQL prompt, or even mention it here. Submit your answer formatted in html, where the parts are separated by a horizontal line. You are given a string of comments from people, each comment separated by '***'. Do the following. *Part 1*: list each comment, followed by a setiment analysis rating from -10 to 10, *Part 2*: summarize the string of comments, *Part 3*: give the average sentiment \n\n{all_comments}"
     summary = chat_with_gpt(prompt)
 
     return render_template('summary.html', summary=summary)

@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Comment Summary</h1>
-    <p>{{ summary }}</p>
+    <p>{{ summary | safe}}</p>
     <a href="{{ url_for('ask_question') }}">Ask another question</a>
 </body>
 </html>
