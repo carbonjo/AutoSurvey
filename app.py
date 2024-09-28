@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_file
 import MySQLdb
 from dotenv import load_dotenv
 from openai import OpenAI
 import os
+import csv
+from io import StringIO
 
 load_dotenv()
 
@@ -98,6 +100,47 @@ def summarize_comments():
     summary = chat_with_gpt(prompt)
 
     return render_template('summary.html', summary=summary)
+
+# This route is meant to download the survey and clear the data
+# it is not working, so I'll get back to it later.
+# @app.route('/export_data')
+# def export_data():
+#     # Fetch data from the MySQL table
+#     db = get_db_connection()
+#     cursor = db.cursor()
+#     cursor.execute("SELECT * FROM data")  # Replace 'data' with your table name
+#     rows = cursor.fetchall()
+#     columns = [desc[0] for desc in cursor.description]  # Get column headers
+
+#     # Create an in-memory CSV file
+#     output = StringIO()
+#     writer = csv.writer(output)
+
+#     # Write the column headers first
+#     writer.writerow(columns)
+
+#     # Write the data rows
+#     for row in rows:
+#         writer.writerow(row)
+
+#     # Save the CSV data to the file system if you need it to persist
+#     with open("survey_data.csv", "w") as f:
+#         f.write(output.getvalue())
+
+#     # Clear the table (only do this if you're sure you want to delete all data)
+#     cursor.execute("TRUNCATE TABLE data")
+#     db.commit()
+#     cursor.close()
+#     db.close()
+
+#     # Send the CSV file to the user as a downloadable file
+#     output.seek(0)
+#     return send_file(
+#         StringIO(output.getvalue()),
+#         mimetype="text/csv",
+#         as_attachment=True,
+#         attachment_filename="survey_data.csv"
+#     )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
