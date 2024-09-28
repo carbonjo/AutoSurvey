@@ -8,33 +8,35 @@
     <title>Query Results</title>
 </head>
 <body>
-    <h1>Query Results</h1>
-    <h2>Original Question:</h2>
-    <p>{{ question }}</p>
-    <h2>chatGPT Generated SQL Query:</h2>
-    <pre>{{ query }}</pre>
-    
-    <h2>Results:</h2>
-    {% if results %}
-        <table border="1">
-            <tr>
-                {% for column in results[0].keys() %}
-                    <th>{{ column }}</th>
-                {% endfor %}
-            </tr>
-            {% for row in results %}
+    <div class="container">
+        <h1>Query Results</h1>
+        <h2>Original Question:</h2>
+        <p>{{ question }}</p>
+        <h2>chatGPT Generated SQL Query:</h2>
+        <pre>{{ query }}</pre>
+        
+        <h2>Results:</h2>
+        {% if results %}
+            <table border="1">
                 <tr>
-                    {% for value in row.values() %}
-                        <td>{{ value }}</td>
+                    {% for column in results[0].keys() %}
+                        <th>{{ column }}</th>
                     {% endfor %}
                 </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>No results found.</p>
-    {% endif %}
-    
-    <a href="{{ url_for('ask_question') }}">Ask another question</a> |
-    <a href="{{ url_for('collect_data') }}">Add more data</a>
+                {% for row in results %}
+                    <tr>
+                        {% for value in row.values() %}
+                            <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+        
+        <a href="{{ url_for('ask_question') }}">Ask another question</a> |
+        <a href="{{ url_for('collect_data') }}">Add more data</a>
+    </div> 
 </body>
 </html>

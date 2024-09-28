@@ -6,16 +6,18 @@
 
 </head>
 <body>
-    <h1>Enter Your Information</h1>
-    <form method="post">
-        Name: <input type="text" name="name" required><br>
-        Age: <input type="number" name="age" required><br>
-        Email: <input type="email" name="email" required><br>
-        <textarea name="comment" placeholder="Your comment"></textarea>
-        <input type="submit" value="Submit">
-    </form>
+    <div class="container">
+        <h1>Enter Your Information</h1>
+        <form method="post">
+            Name: <input type="text" name="name" required><br>
+            Age: <input type="number" name="age" required><br>
+            Email: <input type="email" name="email" required><br>
+            <textarea name="comment" placeholder="Your comment"></textarea>
+            <input type="submit" value="Submit">
+        </form>
 
-    <h2> Ask a questions from the existing data</h2>
-    <a href="{{ url_for('ask_question') }}">Ask a question</a> 
+        <h2> Ask a questions from the existing data</h2>
+        <a href="{{ url_for('ask_question') }}">Ask a question</a> 
+    </div>
 </body>
 </html>
